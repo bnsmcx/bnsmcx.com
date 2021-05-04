@@ -6,4 +6,38 @@
 {% endblock %}
 {% block content %}
     <p>Management page for {{ name }}</p>
+    <table border="1">
+    <caption><h3>Here is the table containing the images for Lab7</h3></caption>
+        <tr>
+            <th>Model</th>
+            <th>Photo</th>
+            <th>Passengers</th>
+            <th>Cruise Speed</th>
+        </tr>
+        <tr>
+            <th>Cessna C-172</th>
+            <td><img src="../static/images/cessna172.jpeg" width="350" alt=""></td>
+            <td>4</td>
+            <td>122 kts</td>
+        </tr>
+        <tr>
+            <th>Maule MXT-7-180</th>
+            <td><img src="../static/images/mauleMXT-7-180.jpeg" width="350" alt=""></td>
+            <td>4</td>
+            <td>126 kts</td>
+        </tr>
+        <tr>
+            <th>Diamond DA-40</th>
+            <td><img src="../static/images/da40.jpeg" width="350" alt=""></td>
+            <td>4</td>
+            <td>151 kts</td>
+        </tr>
+        <tr>
+            <th>Van's RV-14</th>
+            <td><img src="../static/images/rv14.jpeg" width="350" alt=""></td>
+            <td>2</td>
+            <td>168 kts</td>
+        </tr>
+    </table>
+    <ol><a href="/logout">logout</a></ol>
 {% endblock %}

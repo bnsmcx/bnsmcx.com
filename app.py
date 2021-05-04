@@ -43,7 +43,7 @@ def login():
         with open(credentials, 'r') as f:
             reader = DictReader(f)
             for row in reader:
-                if argon2.verify(username, row['username']):
+                if username == row['username']:
                     if argon2.verify(password, row['password']):
                         response = redirect('/manage')
                         response.set_cookie('session_cookie', row['id'])
@@ -61,7 +61,7 @@ def username_available(username: str) -> bool:
     with open(credentials, 'r') as f:
         reader = DictReader(f)
         for row in reader:
-            if argon2.verify(username, row['username']):
+            if row['username'] == username:
                 return False
     return True
 
@@ -78,18 +78,23 @@ def is_complex_password(password: str) -> bool:
 
 
 def add_user(username, password):
-    username_hash = argon2.hash(username)
+    """add a new user record to users.csv"""
     password_hash = argon2.hash(password)
-    with open(credentials, 'a+', newline='\n') as f:
-        row_count = sum(1 for row in f)
-        f.write('"' + username_hash + '","' + password_hash + '",' + str(count_users()))
+    with open(credentials, 'a+') as f:
+        next_id = count_users()
+        if next_id > 0:
+            f.write('\n')
+        f.write('"' + username + '","' + password_hash + '",' + str(count_users()))
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """accept user info, validate it, and create a new account"""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        if password != request.form['confirm_password']:
+            return render_template('register.html', error="Passwords don't match")
         if username_available(username):
             if is_complex_password(password):
                 add_user(username, password)
@@ -125,6 +130,15 @@ def count_users() -> int:
         for row in reader:
             users = reader.line_num
     return users
+
+
+@app.route('/logout')
+def logout():
+    """logout the user"""
+    cookie = request.cookies.get('session_cookie')
+    if cookie in authenticated_user_sessions.keys():
+        authenticated_user_sessions.pop(cookie)
+    return redirect('/resume')
 
 
 if __name__ == '__main__':

@@ -1,2 +1,4 @@
 username,password,id
-"$argon2id$v=19$m=102400,t=2,p=8$OKeU0rq3lvJea+2dk1JqzQ$4FY4+rjWFu99WnurR/JG+g","$argon2id$v=19$m=102400,t=2,p=8$2/s/R+g9JwQgpBSitHbO+Q$QpAg/WVPt4vwUJHdx7sjwA",0
+"ben","$argon2id$v=19$m=102400,t=2,p=8$/V8rZax1rnXuXUspBcB4rw$IfZtKC/2IktQOUr/kAgAZw",0
+"todd","$argon2id$v=19$m=102400,t=2,p=8$shbiHGOs1fp/r3WO8T7n3A$UcvEP5rZB9YCDYUVTCiOJw",2
+"tim","$argon2id$v=19$m=102400,t=2,p=8$cQ5hDEHovbfW2ru31rr3Xg$FsUFUrnqDk6fxXSL+G+U5Q",3
