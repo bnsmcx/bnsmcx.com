@@ -49,3 +49,13 @@ ol {
     text-align: center;
     padding: 1px;
 }
+
+div {
+    text-align: center;
+    padding: 10px;
+}
+
+.error {
+    color: darkred;
+    font-weight: bolder;
+}
