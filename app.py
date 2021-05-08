@@ -5,12 +5,15 @@ AUTHOR:     Ben Simcox
 PROJECT:    bnsmcx.com
 PURPOSE:    Flask entry point.
 """
-from csv import DictReader
+import shutil
+from csv import DictReader, DictWriter
 from flask import Flask, render_template, request, redirect
 from passlib.hash import argon2
 
 app = Flask(__name__)
 credentials = app.root_path + '/users.csv'
+temp_credentials = app.root_path + '/temp_users.csv'
+common_passwords = app.root_path + '/CommonPassword.txt'
 authenticated_user_sessions = {}
 
 
@@ -52,7 +55,6 @@ def login():
                     else:
                         return render_template('login.html', error="Invalid Password")
             return render_template('login.html', error="User not found")
-
     return render_template('login.html', error="")
 
 
@@ -111,15 +113,76 @@ def register():
     return render_template('register.html', error="")
 
 
+def user_is_authenticated() -> bool:
+    """check and see if a valid session exists for the user"""
+    cookie = request.cookies.get('session_cookie')
+    if cookie not in authenticated_user_sessions.keys():
+        return False
+    return True
+
+
+def is_uncommon_password(password):
+    """check to see if a password is in a file of common passwords"""
+    with open(common_passwords, 'r') as file:
+        for word in file:
+            if word == password:
+                return False
+    return True
+
+
+def _prep_temp_credentials_file():
+    """creates and adds the csv headers to the temp_credentials file"""
+    with open(temp_credentials, 'w') as file:
+        file.write("username,password,id")
+        file.write("\n")
+
+
+def set_password(username: str, password: str) -> bool:
+    """set the password for a given username"""
+    if is_complex_password(password) and is_uncommon_password(password):
+        password_hash = argon2.hash(password)
+        _prep_temp_credentials_file()
+        with open(credentials, 'r') as file, open(temp_credentials, 'a') as temp_file:
+            reader = DictReader(file)
+            fieldnames = ['username', 'password', 'id']
+            writer = DictWriter(temp_file, fieldnames)
+            for row in reader:
+                if row['username'] == username:
+                    row['password'] = password_hash
+                    writer.writerow(row)
+                else:
+                    writer.writerow(row)
+        shutil.move(temp_credentials, credentials)
+        return True
+    return False
+
+
+@app.route('/change_pass', methods=['GET', 'POST'])
+def change_pass():
+    """change a user's password"""
+    if request.method == 'POST':
+        username = authenticated_user_sessions[request.cookies.get('session_cookie')]
+        password = request.form['password']
+        if user_is_authenticated() and password == request.form['confirm_password']:
+            if not set_password(username, password):
+                return render_template('change_password.html',
+                                       error="""Either your password is too common or used an insufficient
+                                        password complexity,\n it must be 12 characters and include 
+                                        at least 1 uppercase, 1 lowercase, 1 number and 1 special 
+                                        character""")
+            return redirect('/manage')
+        return render_template('change_password.html', error="Passwords don't match.")
+    return render_template('change_password.html', error='')
+
+
 @app.route('/manage')
 def management():
     """force users to the login page if they aren't authenticated"""
     cookie = request.cookies.get('session_cookie')
-    if cookie not in authenticated_user_sessions.keys():
-        return redirect('/login')
-    else:
+    if user_is_authenticated():
         user = authenticated_user_sessions[cookie]
         return render_template('management.html', name=user)
+    return redirect('/login')
 
 
 def count_users() -> int:
@@ -127,7 +190,7 @@ def count_users() -> int:
     users = 0
     with open(credentials, 'r') as f:
         reader = DictReader(f)
-        for row in reader:
+        for _ in reader:
             users = reader.line_num
     return users
 
@@ -142,5 +205,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    print(count_users())
     app.run()
