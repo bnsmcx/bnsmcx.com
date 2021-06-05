@@ -1,0 +1,3 @@
+[submodule "probable-guacamole"]
+	path = probable-guacamole
+	url = https://github.com/bnsmcx/probable-guacamole.git
