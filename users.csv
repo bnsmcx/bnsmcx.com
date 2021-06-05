@@ -1,6 +1,0 @@
-username,password,id
-ben,"$argon2id$v=19$m=102400,t=2,p=8$w7iX0prT+p8TQuidU8q59w$MuOkgpLgD3jqcaGGyH0jIQ",0
-todd,"$argon2id$v=19$m=102400,t=2,p=8$tZbS+h/DWKsVovR+z/lf6w$e5rlbaAb/2b1j8baXODbGQ",2
-tim,"$argon2id$v=19$m=102400,t=2,p=8$YIwxJsQ4RyiFsBbifO8dYw$pz8E/coCUyia0lUQsl4FUA",3
-rupert,"$argon2id$v=19$m=102400,t=2,p=8$hNBaaw2BkLI2pnROKcUYIw$qDYuLe63O1WZcetCcmB91A",4
-tory,"$argon2id$v=19$m=102400,t=2,p=8$6P1/b00pJSSEkFKKMQaA8A$nxh49DHVNhvs4rr18gm+Mg",6

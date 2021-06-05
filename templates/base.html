@@ -3,19 +3,15 @@
 <head>
     {% block head %}
         <link rel="stylesheet" type="text/css" href="../static/style.css"/>
-        <title>{% block title %}{% endblock %} bnsmcx.com</title>
+        <title>{% block title %}{% endblock %}Ben Simcox</title>
     {% endblock %}
 </head>
 <body>
     <h1 class="title">Ben Simcox</h1>
-    <h2 class="sub-title">Programming enthusiast and budding hacker</h2>
-    <ul class="navigation">
-        <a href="/resume">resume</a>
-        <a href="/blog">blog</a>
-        <a href="/manage">manage</a>
-        <a href="/register">register</a>
-    </ul>
-    <div id="content">{% block content %}{% endblock %}</div>
+    <ul class="navigation">{% for link in links %}
+        <a href="{{ link }}">{{ link }}</a>
+    {% endfor %}</ul>
+    <div id="content">{% block content %}{{ content|safe }}{% endblock %}</div>
     <div id="footer">
         {% block footer %}
         {% endblock %}
