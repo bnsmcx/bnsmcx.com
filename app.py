@@ -6,8 +6,8 @@ PURPOSE:    Flask entry point.
 """
 import os
 import md_to_html as m2h
-from flask import Flask, render_template, redirect, url_for
 
+from flask import Flask, render_template, redirect, url_for
 
 app = Flask(__name__)
 content_dir = app.root_path + "/static/content/"
@@ -28,8 +28,11 @@ def blog():
     for post_date in blog_posts:
         post_markdown_file = get_content_path(blog_dir + post_date + "/")
         preview = m2h.Compiler(post_markdown_file).get_preview()
-        content += "<a style=\"display:block\" href=\"/blog/" + post_date +\
-                   "\"><div>\n" + preview + post_date + "</div></a>\n"
+        # The first line of 'content' makes the entire content division a link to the post
+        content += "<a style=\"display:block\" href=\"/blog/" + post_date + "\"><div>\n" + \
+                   post_date + \
+                   preview + \
+                   "</div></a>\n"
     return render_template('base.html', links=map_links(), content=content)
 
 
@@ -54,7 +57,7 @@ def not_found():
 def get_content(path: str):
     """if path exists give the user content, otherwise, a 404"""
     path = get_content_path(content_dir + path + "/")
-    if len(path) > 0:
+    if path:
         content = m2h.Compiler(path).get_html()
         return render_template('base.html', links=map_links(), content=content)
     return redirect(url_for("not_found"))

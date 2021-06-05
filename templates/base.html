@@ -9,7 +9,7 @@
 <body>
     <h1 class="title">Ben Simcox</h1>
     <ul class="navigation">{% for link in links %}
-        <a href="{{ link }}">{{ link }}</a>
+        <a href="/{{ link }}">{{ link }}</a>
     {% endfor %}</ul>
     <div id="content">{% block content %}{{ content|safe }}{% endblock %}</div>
     <div id="footer">
