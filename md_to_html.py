@@ -61,7 +61,7 @@ def _parse_link(token: str) -> str:
     """parse and return a link"""
     text = re.search(r"\[(.+)\]", token).group(1)
     url = re.search(r"\((.+)\)", token).group(1)
-    return "<a href\"" + url + "\">" + text + "</a>"
+    return "<a href=\"" + url + "\">" + text + "</a>"
 
 
 def _parse_image(token: str) -> str:
@@ -76,8 +76,9 @@ def _parse_inline_syntax(token: str) -> str:
     punctuation = ""
     if re.search(r"!\[(.+)\]\((.+)\)", token):
         return _parse_image(token)
-    if re.search(r"\[(.+)\]\((.+)\)", token):
+    if re.search(r"\[((.+)(\s*)(.*))\]\((.+)\)", token):
         return _parse_link(token)
+    # This line handles punctuation adjacent to significant asterix
     if re.match("[^a-zA-Z0-9_\\*`]", token[-1]):
         punctuation = token[-1]
         token = token[:-1]

@@ -28,10 +28,10 @@ def blog():
     for post_date in blog_posts:
         post_markdown_file = get_content_path(blog_dir + post_date + "/")
         preview = m2h.Compiler(post_markdown_file).get_preview()
-        # The first line of 'content' makes the entire content division a link to the post
-        content += "<a style=\"display:block\" href=\"/blog/" + post_date + "\"><div>\n" + \
-                   post_date + \
+        content += "<a class=\"text-center text-decoration-none text-dark\" href=\"/blog/" + post_date + \
+                   "\"><div class=\"bg-body shadow-lg p-4 mb-5 rounded mask\">\n" + \
                    preview + \
+                   "<h4>" + post_date + "</h4>" + \
                    "</div></a>\n"
     return render_template('base.html', links=map_links(), content=content)
 
@@ -81,4 +81,4 @@ def map_links():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
