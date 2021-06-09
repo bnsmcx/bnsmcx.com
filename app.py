@@ -17,7 +17,10 @@ blog_dir = app.root_path + "/static/content/blog/"
 @app.route('/')
 def landing_page():
     """landing page defaults to resume"""
-    return blog()
+    try:
+        return blog()
+    except FileNotFoundError:
+        return redirect(url_for("not_found"))
 
 
 @app.route('/blog')
@@ -29,7 +32,7 @@ def blog():
         post_markdown_file = get_content_path(blog_dir + post_date + "/")
         preview = m2h.Compiler(post_markdown_file).get_preview()
         content += "<a class=\"text-center text-decoration-none text-dark\" href=\"/blog/" + post_date + \
-                   "\"><div class=\"bg-body shadow-lg p-4 mb-5 rounded mask\">\n" + \
+                   "\"><div class=\"blog-preview shadow-lg p-4 mb-5 rounded mask\">\n" + \
                    preview + \
                    "<h4>" + post_date + "</h4>" + \
                    "</div></a>\n"
@@ -50,17 +53,20 @@ def blog_post(post: str):
 def not_found():
     """show the user a 404 message"""
     message = "<h1>404 - Page not found.</h1>"
-    return render_template('base.html', links=map_links(), content=message)
+    return render_template('base.html', links=map_links(), content=message), 404
 
 
 @app.route('/<path>')
 def get_content(path: str):
     """if path exists give the user content, otherwise, a 404"""
-    path = get_content_path(content_dir + path + "/")
-    if path:
-        content = m2h.Compiler(path).get_html()
-        return render_template('base.html', links=map_links(), content=content)
-    return redirect(url_for("not_found"))
+    try:
+        path = get_content_path(content_dir + path + "/")
+        if path:
+            content = m2h.Compiler(path).get_html()
+            return render_template('base.html', links=map_links(), content=content)
+        return redirect(url_for("not_found"))
+    except IsADirectoryError:
+        return redirect(url_for("not_found"))
 
 
 def get_content_path(path: str) -> str:
@@ -76,8 +82,11 @@ def get_content_path(path: str) -> str:
 
 def map_links():
     """return a map of links based on the content directory"""
-    links = os.listdir(content_dir)
-    return links
+    try:
+        links = os.listdir(content_dir)
+        return links
+    except FileNotFoundError:
+        return []
 
 
 if __name__ == '__main__':
