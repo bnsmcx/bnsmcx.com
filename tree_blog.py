@@ -1,8 +1,10 @@
 """
-FILE:       app.py
+FILE:       tree_blog.py
 AUTHOR:     Ben Simcox
-PROJECT:    bnsmcx.com
-PURPOSE:    Flask entry point.
+PROJECT:    Tree Blog (github.com/bnsmcx/tree_blog)
+PURPOSE:    This simple Flask app is a CMS that is organized logically around parsing
+            a directory tree to get its shape and compiling markdown to HTML to get
+            its content.
 """
 import os
 import markdown
