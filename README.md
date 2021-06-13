@@ -19,5 +19,5 @@ Navigating to 'Blog' on the webpage will show the user a summary of all posts.  
 
 Things you'll need to change:
 
-* The 'title' and 'navbar-brand' components of the `base.html` template are currently set to "Tree Blog."  Put your site name here.
-* Whatever style changes you want.  There is a simple and functional theme.  All style editing is done within the `base.html` template using bootstrap class references with the exception of the 'hover' effect over the blogpost preview.  That is done in `/static/style.css` and is the only custom css.
+* The 'title' and 'navbar-brand' components of the `/static/templates/base.html` template are currently set to "Tree Blog."  Put your site name here.
+* Whatever style changes you want.  There is a simple and functional theme.  All style editing is done within the `base.html` template using bootstrap with the exception of the 'hover' effect over the blog post preview.  That is done in `/static/style.css` and is the only custom css.
