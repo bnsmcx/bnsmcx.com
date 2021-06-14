@@ -27,7 +27,7 @@ Navigating to 'Blog' on the webpage will show the user a summary of all posts.  
 ### Installing on Ubuntu based distros:
 
 1. If you need to install virtualenv:
-	* `sudo apt update && apt instal python3-venv`
+	* `sudo apt update && apt install python3-venv`
 	* `pip install virtualenv`
 2. Create the virtualenv from the root of the app directory:
 	* `python3 -m venv name_of_env` 
