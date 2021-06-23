@@ -49,7 +49,7 @@ def blog():
     blog_posts = os.listdir(blog_dir)
     content = ""
     for post_date in blog_posts:
-        post_markdown_file = get_content_path(blog_dir + post_date + "/")
+        post_markdown_file = get_markdown_path(blog_dir + post_date + "/")
         preview = get_preview(post_markdown_file)
         content += "<a class=\"text-center text-decoration-none text-dark\" href=\"/blog/" + post_date + \
                    "\"><div class=\"blog-preview shadow-lg p-4 mb-5 rounded mask\">\n" + \
@@ -62,7 +62,7 @@ def blog():
 @app.route('/blog/<post>')
 def blog_post(post: str):
     """Render the requested post"""
-    path = get_content_path(blog_dir + post + "/")
+    path = get_markdown_path(blog_dir + post + "/")
     if path:
         content = get_html(path)
         return render_template('base.html', links=map_links(), content=content)
@@ -88,16 +88,35 @@ def get_html(path: str) -> str:
 def get_content(path: str):
     """if path exists give the user content, otherwise, a 404"""
     try:
-        path = get_content_path(content_dir + path + "/")
-        if path:
-            content = get_html(path)
+        post_directory = content_dir + path + "/"
+        markdown_path = get_markdown_path(post_directory)
+        if markdown_path:
+            content = get_html(markdown_path)
+            if contains_static_content(content):
+                content = handle_static_content_links(content, path)
             return render_template('base.html', links=map_links(), content=content)
         return redirect(url_for("not_found"))
     except IsADirectoryError:
         return redirect(url_for("not_found"))
 
 
-def get_content_path(path: str) -> str:
+def handle_static_content_links(content: str, path: str) -> str:
+    """Prepend the provided path to image links in the provided html content"""
+    link_start = content.find('src="') + 5
+    link_stop = content[link_start:].find('/>') + link_start - 2
+    filename = content[link_start:link_stop]
+    static_path = "content/" + path + "/" + filename
+    static_path = url_for("static", filename=static_path)
+    modified_content = content[:link_start] + static_path + content[link_stop:]
+    return modified_content
+
+
+def contains_static_content(content: str) -> bool:
+    """check if html contains links to local images"""
+    return "<img alt=" in content
+
+
+def get_markdown_path(path: str) -> str:
     """return the full path to a markdown content file"""
     markdown_file_path = ""
     if os.path.exists(path):
@@ -118,4 +137,4 @@ def map_links():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
